@@ -15,6 +15,7 @@ import Reports from "./pages/Reports";
 import Billing from "./pages/Billing";
 import AccessControl from "./pages/AccessControl";
 import Users from "./pages/Users";
+import AIInterface from "./pages/AIInterface";
 
 function App() {
   return (
@@ -81,6 +82,16 @@ function App() {
               <ProtectedRoute requiredPermissions={["admin.manage"]}>
                 <AdminLayout>
                   <AccessControl />
+                </AdminLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ai"
+            element={
+              <ProtectedRoute>
+                <AdminLayout>
+                  <AIInterface />
                 </AdminLayout>
               </ProtectedRoute>
             }
