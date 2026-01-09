@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { authAPI } from "../services/api";
+import axios from "axios";
 
 const AuthContext = createContext(null);
 
@@ -7,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [permissions, setPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [theme, settheme] = useState("light");
   useEffect(() => {
     // Check if user is logged in on mount
     const initAuth = async () => {
@@ -82,6 +83,40 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("permissions", JSON.stringify(newPermissions));
   };
 
+  const askQuestion = async (data) => {
+    const url = `http://192.168.40.147:3700/api/ask-question`;
+    // make the API call
+    let result = await axios
+      .post(url, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .catch((error) => {
+        return error;
+      });
+    console.log("result from ai", result);
+    return result.data;
+  };
+
+  const uploadPdf = async (file) => {
+    const formData = new FormData();
+    const url = `http://192.168.40.147:3700/api/upload-invoice`;
+    formData.append("file", file.file);
+    // make the API call
+    let result = await axios
+      .post(url, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .catch((error) => {
+        return error;
+      });
+    console.log("result for pdf from ai ", result);
+    return result.data;
+  };
+
   const value = {
     user,
     permissions,
@@ -91,6 +126,8 @@ export const AuthProvider = ({ children }) => {
     logout,
     updateUser,
     updatePermissions,
+    askQuestion,
+    uploadPdf,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

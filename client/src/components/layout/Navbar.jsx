@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import Button from '../common/Button';
+import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
+import Button from "../common/Button";
 
 const Navbar = ({ onMenuClick }) => {
   const { user, logout } = useAuth();
@@ -8,9 +8,9 @@ const Navbar = ({ onMenuClick }) => {
 
   const getInitials = (name) => {
     return name
-      .split(' ')
+      .split(" ")
       .map((n) => n[0])
-      .join('')
+      .join("")
       .toUpperCase()
       .slice(0, 2);
   };
@@ -43,13 +43,13 @@ const Navbar = ({ onMenuClick }) => {
       {/* Right: Search + User menu */}
       <div className="flex items-center gap-4">
         {/* Search (hidden on mobile) */}
-        <div className="hidden md:block">
+        {/* <div className="hidden md:block">
           <input
             type="text"
             placeholder="Search..."
             className="px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent w-64"
           />
-        </div>
+        </div> */}
 
         {/* User menu */}
         <div className="relative">
@@ -58,10 +58,10 @@ const Navbar = ({ onMenuClick }) => {
             className="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-100 transition-colors"
           >
             <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
-              {user ? getInitials(user.name) : 'U'}
+              {user ? getInitials(user.name) : "U"}
             </div>
             <span className="hidden md:block text-sm font-medium text-slate-700">
-              {user?.name || 'User'}
+              {user?.name || "User"}
             </span>
             <svg
               className="w-4 h-4 text-slate-600"
@@ -111,4 +111,3 @@ const Navbar = ({ onMenuClick }) => {
 };
 
 export default Navbar;
-
