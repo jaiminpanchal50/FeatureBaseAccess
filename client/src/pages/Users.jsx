@@ -38,6 +38,31 @@ const Users = () => {
     Roles: ["role.read", "role.create", "role.update", "role.delete"],
     Admin: ["admin.manage"],
   };
+  const permissionNames = [
+    { name: "user.create", label: "Create" },
+    { name: "user.read", label: "Read" },
+    { name: "user.update", label: "Update" },
+    { name: "user.delete", label: "Delete" },
+    { name: "report.view", label: "View" },
+    { name: "report.download", label: "Download" },
+    { name: "billing.view", label: "View" },
+    { name: "billing.manage", label: "Manage" },
+    { name: "role.read", label: "Read" },
+    { name: "role.create", label: "Create" },
+    { name: "role.update", label: "Update" },
+    { name: "role.delete", label: "Delete" },
+    { name: "admin.manage", label: "Manage" },
+  ];
+
+  const accessName = (perm) => {
+    let label = "";
+    permissionNames.map((obj) => {
+      if (obj.name === perm) {
+        label = obj.label;
+      }
+    });
+    return label;
+  };
 
   useEffect(() => {
     fetchUsers();
@@ -409,24 +434,32 @@ const Users = () => {
                   <h5 className="font-medium text-slate-900 mb-3">
                     {groupName}
                   </h5>
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {perms.map((perm) => (
                       <label
                         key={perm}
-                        className="flex items-center space-x-2 cursor-pointer"
+                        className="flex items-center justify-between cursor-pointer select-none"
                       >
-                        <input
-                          type="checkbox"
-                          checked={
-                            isSuperAdmin ||
-                            permissionGroups[groupName]?.[perm] ||
-                            false
-                          }
-                          onChange={() => togglePermission(groupName, perm)}
-                          disabled={isSuperAdmin}
-                          className="w-4 h-4 text-primary-600 border-slate-300 rounded focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                        />
-                        <span className="text-sm text-slate-700">{perm}</span>
+                        <span className="text-sm text-slate-700">
+                          {accessName(perm)}
+                        </span>
+
+                        {/* Toggle switch */}
+                        <div className="relative">
+                          <input
+                            type="checkbox"
+                            checked={
+                              isSuperAdmin ||
+                              permissionGroups[groupName]?.[perm] ||
+                              false
+                            }
+                            onChange={() => togglePermission(groupName, perm)}
+                            disabled={isSuperAdmin}
+                            className="sr-only peer"
+                          />
+                          <div className="w-10 h-5 bg-slate-300 rounded-full peer peer-checked:bg-primary-600 transition-colors"></div>
+                          <div className="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow-md transition-transform peer-checked:translate-x-5"></div>
+                        </div>
                       </label>
                     ))}
                   </div>

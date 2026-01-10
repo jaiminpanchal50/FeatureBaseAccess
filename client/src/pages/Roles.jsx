@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { rolesAPI } from '../services/api';
-import { useAuth } from '../context/AuthContext';
-import { can } from '../utils/permissions';
-import Table from '../components/common/Table';
-import Button from '../components/common/Button';
-import Badge from '../components/common/Badge';
-import Modal from '../components/common/Modal';
-import Input from '../components/common/Input';
+import { useState, useEffect } from "react";
+import { rolesAPI } from "../services/api";
+import { useAuth } from "../context/AuthContext";
+import { can } from "../utils/permissions";
+import Table from "../components/common/Table";
+import Button from "../components/common/Button";
+import Badge from "../components/common/Badge";
+import Modal from "../components/common/Modal";
+import Input from "../components/common/Input";
 
 const Roles = () => {
   const { permissions } = useAuth();
@@ -15,26 +15,52 @@ const Roles = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingRole, setEditingRole] = useState(null);
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
+    name: "",
+    description: "",
     permissions: [],
   });
 
   const allPermissions = [
-    'user.read',
-    'user.create',
-    'user.update',
-    'user.delete',
-    'report.view',
-    'report.download',
-    'billing.view',
-    'billing.manage',
-    'role.read',
-    'role.create',
-    'role.update',
-    'role.delete',
-    'admin.manage',
+    "user.read",
+    "user.create",
+    "user.update",
+    "user.delete",
+    "report.view",
+    "report.download",
+    "billing.view",
+    "billing.manage",
+    "role.read",
+    "role.create",
+    "role.update",
+    "role.delete",
+    "admin.manage",
   ];
+
+  const permissionNames = [
+    { name: "user.create", label: "User Create" },
+    { name: "user.read", label: "User Read" },
+    { name: "user.update", label: "User Update" },
+    { name: "user.delete", label: "User Delete" },
+    { name: "report.view", label: "Report View" },
+    { name: "report.download", label: "Report Download" },
+    { name: "billing.view", label: "Billing View" },
+    { name: "billing.manage", label: "Billing Manage" },
+    { name: "role.read", label: "Role Read" },
+    { name: "role.create", label: "Role Create" },
+    { name: "role.update", label: "Role Update" },
+    { name: "role.delete", label: "Role Delete" },
+    { name: "admin.manage", label: "Admin Manage" },
+  ];
+
+  const accessName = (perm) => {
+    let label = "";
+    permissionNames.map((obj) => {
+      if (obj.name === perm) {
+        label = obj.label;
+      }
+    });
+    return label;
+  };
 
   useEffect(() => {
     fetchRoles();
@@ -45,7 +71,7 @@ const Roles = () => {
       const response = await rolesAPI.getAll();
       setRoles(response.data.data.roles);
     } catch (error) {
-      console.error('Error fetching roles:', error);
+      console.error("Error fetching roles:", error);
     } finally {
       setLoading(false);
     }
@@ -54,8 +80,8 @@ const Roles = () => {
   const handleCreate = () => {
     setEditingRole(null);
     setFormData({
-      name: '',
-      description: '',
+      name: "",
+      description: "",
       permissions: [],
     });
     setModalOpen(true);
@@ -65,14 +91,14 @@ const Roles = () => {
     setEditingRole(role);
     setFormData({
       name: role.name,
-      description: role.description || '',
+      description: role.description || "",
       permissions: role.permissions || [],
     });
     setModalOpen(true);
   };
 
   const handleDelete = async (roleId) => {
-    if (!window.confirm('Are you sure you want to delete this role?')) {
+    if (!window.confirm("Are you sure you want to delete this role?")) {
       return;
     }
 
@@ -80,8 +106,8 @@ const Roles = () => {
       await rolesAPI.delete(roleId);
       fetchRoles();
     } catch (error) {
-      console.error('Error deleting role:', error);
-      alert('Failed to delete role. Please try again.');
+      console.error("Error deleting role:", error);
+      alert("Failed to delete role. Please try again.");
     }
   };
 
@@ -95,8 +121,8 @@ const Roles = () => {
       setModalOpen(false);
       fetchRoles();
     } catch (error) {
-      console.error('Error saving role:', error);
-      alert('Failed to save role. Please try again.');
+      console.error("Error saving role:", error);
+      alert("Failed to save role. Please try again.");
     }
   };
 
@@ -109,16 +135,18 @@ const Roles = () => {
     }));
   };
 
-  const headers = ['Name', 'Description', 'Permissions', 'Actions'];
+  const headers = ["Name", "Description", "Permissions", "Actions"];
 
   const renderRow = (role) => (
     <>
       <td className="px-3 sm:px-6 py-4">
-        <div className="text-xs sm:text-sm font-medium text-slate-900">{role.name}</div>
+        <div className="text-xs sm:text-sm font-medium text-slate-900">
+          {role.name}
+        </div>
       </td>
       <td className="px-3 sm:px-6 py-4">
         <div className="text-xs sm:text-sm text-slate-600">
-          {role.description || 'No description'}
+          {role.description || "No description"}
         </div>
       </td>
       <td className="px-3 sm:px-6 py-4">
@@ -130,7 +158,9 @@ const Roles = () => {
               </Badge>
             ))
           ) : (
-            <span className="text-xs sm:text-sm text-slate-400">No permissions</span>
+            <span className="text-xs sm:text-sm text-slate-400">
+              No permissions
+            </span>
           )}
           {role.permissions.length > 2 && (
             <Badge variant="default" className="text-xs">
@@ -141,7 +171,7 @@ const Roles = () => {
       </td>
       <td className="px-3 sm:px-6 py-4 text-sm">
         <div className="flex flex-col sm:flex-row gap-2">
-          {can(permissions, 'role.update') && (
+          {can(permissions, "role.update") && (
             <Button
               variant="outline"
               size="sm"
@@ -151,7 +181,7 @@ const Roles = () => {
               Edit
             </Button>
           )}
-          {can(permissions, 'role.delete') && (
+          {can(permissions, "role.delete") && (
             <Button
               variant="danger"
               size="sm"
@@ -178,11 +208,19 @@ const Roles = () => {
     <div>
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Roles</h2>
-          <p className="text-sm sm:text-base text-slate-600 mt-1">Manage roles and their permissions</p>
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
+            Roles
+          </h2>
+          <p className="text-sm sm:text-base text-slate-600 mt-1">
+            Manage roles and their permissions
+          </p>
         </div>
-        {can(permissions, 'role.create') && (
-          <Button variant="primary" onClick={handleCreate} className="w-full sm:w-auto">
+        {can(permissions, "role.create") && (
+          <Button
+            variant="primary"
+            onClick={handleCreate}
+            className="w-full sm:w-auto"
+          >
             Create Role
           </Button>
         )}
@@ -201,7 +239,7 @@ const Roles = () => {
       <Modal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        title={editingRole ? 'Edit Role' : 'Create Role'}
+        title={editingRole ? "Edit Role" : "Create Role"}
         size="lg"
       >
         <div className="space-y-4">
@@ -209,9 +247,7 @@ const Roles = () => {
             label="Role Name"
             name="name"
             value={formData.name}
-            onChange={(e) =>
-              setFormData({ ...formData, name: e.target.value })
-            }
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             placeholder="e.g., admin, manager, editor"
             required
           />
@@ -235,15 +271,23 @@ const Roles = () => {
                 {allPermissions.map((perm) => (
                   <label
                     key={perm}
-                    className="flex items-center space-x-2 cursor-pointer"
+                    className="flex items-center justify-between cursor-pointer"
                   >
-                    <input
-                      type="checkbox"
-                      checked={formData.permissions.includes(perm)}
-                      onChange={() => togglePermission(perm)}
-                      className="w-4 h-4 text-primary-600 border-slate-300 rounded focus:ring-primary-500"
-                    />
-                    <span className="text-sm text-slate-700">{perm}</span>
+                    <span className="text-sm text-slate-700">
+                      {accessName(perm)}
+                    </span>
+
+                    {/* Toggle switch */}
+                    <div className="relative">
+                      <input
+                        type="checkbox"
+                        checked={formData.permissions.includes(perm)}
+                        onChange={() => togglePermission(perm)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-10 h-5 bg-slate-300 rounded-full peer-checked:bg-primary-600 transition-colors"></div>
+                      <div className="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform peer-checked:translate-x-5"></div>
+                    </div>
                   </label>
                 ))}
               </div>
@@ -258,12 +302,8 @@ const Roles = () => {
             >
               Cancel
             </Button>
-            <Button
-              variant="primary"
-              onClick={handleSave}
-              className="flex-1"
-            >
-              {editingRole ? 'Update' : 'Create'}
+            <Button variant="primary" onClick={handleSave} className="flex-1">
+              {editingRole ? "Update" : "Create"}
             </Button>
           </div>
         </div>
@@ -273,4 +313,3 @@ const Roles = () => {
 };
 
 export default Roles;
-
